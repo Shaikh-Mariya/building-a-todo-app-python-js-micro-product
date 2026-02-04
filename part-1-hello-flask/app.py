@@ -37,6 +37,7 @@ def contact():
     """Contact page - contact information"""
     return render_template('contact.html')
 
+<<<<<<< HEAD
 @app.route('/services')
 def services():
     """Services page - list of services offered"""
@@ -50,6 +51,8 @@ def hello_text():
 def hello(name):
     """dynamic route that greets the user by name"""
     return f"Hello, {name}! This is a dynamic route."
+=======
+>>>>>>> 1dcb057e3d7fb0f7167dc2ea644af6bc3c4c2652
 
 # =============================================================================
 # RUN THE SERVER
@@ -57,9 +60,15 @@ def hello(name):
 if __name__ == '__main__':
     print("\n" + "="*50)
     print("  Part 1: Hello Flask")
+<<<<<<< HEAD
     print("  Open: http://127.0.0.1:8080")
     print("="*50 + "\n")
     app.run(debug=True,port=8080)
+=======
+    print("  Open: http://127.0.0.1:5000")
+    print("="*50 + "\n")
+    app.run(debug=True)
+>>>>>>> 1dcb057e3d7fb0f7167dc2ea644af6bc3c4c2652
 
 
 # ============================================
