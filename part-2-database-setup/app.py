@@ -31,40 +31,68 @@ def home():
     """Home page"""
     return render_template('index.html')
 
-
 @app.route('/test-db')
 def test_db():
-    """
-    Test route to verify database is working.
-    Creates a test user and todo if they don't exist.
-    """
-    # Check if test user exists
-    user = User.query.filter_by(username='testuser').first()
-    print(user)
 
-    if not user:
-        # Create test user
-        user = User(
-            username='testuser',
-            email='test@example.com',
-            password_hash='temporary'
+    # ===============================
+    # ACTIVITY 4 - CREATE 3 USERS
+    # ===============================
+
+    if User.query.count() == 0:
+
+        user1 = User(
+            username='user1',
+            email='user1@example.com',
+            password_hash='pass'
         )
-        db.session.add(user)
+
+        user2 = User(
+            username='user2',
+            email='user2@example.com',
+            phone='123-456-7890',
+            password_hash='pass'
+        )
+
+        user3 = User(
+            username='user3',
+            email='user3@example.com',
+            password_hash='pass'
+        )
+
+        db.session.add_all([user1, user2, user3])
         db.session.commit()
 
-        # Create test todo
-        todo = Todo(
-            task_content='Learn SQLAlchemy',
-            user_id=user.id
-        )
-        db.session.add(todo)
+        # Create Todos
+        todo1 = Todo(task_content='Learn Flask', user_id=user1.id)
+        todo2 = Todo(task_content='Learn SQLAlchemy', user_id=user2.id)
+        todo3 = Todo(task_content='Build Todo App', user_id=user3.id)
+
+        db.session.add_all([todo1, todo2, todo3])
         db.session.commit()
 
-    # Get all users and todos for display
+    # ===============================
+    # ACTIVITY 2 - QUERY PRACTICE
+    # ===============================
+
     all_users = User.query.all()
+    print("All Users:", all_users)
+
+    first_user = User.query.first()
+    print("First User:", first_user)
+
+    total_users = User.query.count()
+    print("Total Users:", total_users)
+
+    # ===============================
+
     all_todos = Todo.query.all()
 
-    return render_template('test_db.html', users=all_users, todos=all_todos)
+    return render_template(
+        'test_db.html',
+        users=all_users,
+        todos=all_todos
+    )
+
 
 
 # =============================================================================
