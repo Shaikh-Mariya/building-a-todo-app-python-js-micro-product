@@ -15,7 +15,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 SECRET_KEY = "your-secret-key-change-in-production"
 
 # Token expires after 24 hours
-TOKEN_EXPIRATION_HOURS = 24
+TOKEN_EXPIRATION_HOURS = 0.001   
 
 
 # =============================================================================
