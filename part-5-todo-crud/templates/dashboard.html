@@ -97,16 +97,30 @@
             if (data.todos.length === 0) {
                 todoList.innerHTML = '<div class="text-center py-4 text-muted">No tasks yet! Add one above.</div>';
             } else {
-                todoList.innerHTML = data.todos.map(todo => `
-                    <div class="todo-item ${todo.is_completed ? 'completed' : ''}" data-id="${todo.id}">
-                        <input type="checkbox" class="form-check-input"
+              todoList.innerHTML = data.todos.map(todo => `
+                 <div class="todo-item ${todo.is_completed ? 'completed' : ''}" data-id="${todo.id}">
+        
+                         <input type="checkbox" class="form-check-input"
                                ${todo.is_completed ? 'checked' : ''}
                                onchange="toggleTodo(${todo.id}, this.checked)">
-                        <span class="todo-text">${escapeHtml(todo.task_content)}</span>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTodo(${todo.id})">Delete</button>
+
+                          <span class="todo-text" id="task-${todo.id}">
+                              ${escapeHtml(todo.task_content)}
+                           </span>
+
+                        <button class="btn btn-sm btn-outline-primary me-2"
+                              onclick="editTodo(${todo.id}, ${JSON.stringify(todo.task_content)})">
+                                 Edit
+                        </button>
+
+                        <button class="btn btn-sm btn-outline-danger"
+                               onclick="deleteTodo(${todo.id})">
+                               Delete
+                         </button>
                     </div>
-                `).join('');
-            }
+ `).join('');
+
+ }
 
             // Update count
             const completed = data.todos.filter(t => t.is_completed).length;
@@ -141,6 +155,47 @@
             localStorage.clear();
             window.location.href = '/';
         }
+
+function editTodo(id, oldContent) {
+    const newContent = prompt("Edit your task:", oldContent);
+
+    if (!newContent) return;
+
+    fetch(`/api/todos/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({ task_content: newContent })
+    })
+    .then(res => res.json())
+    .then(() => {
+        loadTodos();
+    });
+}
+
+
+async function saveEdit(id) {
+
+    const input = document.getElementById(`edit-input-${id}`);
+    const newContent = input.value.trim();
+
+    if (!newContent) return;
+
+    await fetch(`/api/todos/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            task_content: newContent
+        })
+    });
+
+    loadTodos();
+}
+
     </script>
 </body>
 </html>

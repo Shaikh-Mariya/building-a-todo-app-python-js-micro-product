@@ -233,6 +233,52 @@ def delete_user(user_id):
     return jsonify({'message': f'User {user.username} deleted'})
 
 
+# ============================================
+# Activity 3: Promote user to admin
+# ============================================
+
+@app.route('/api/admin/promote/<int:user_id>', methods=['PUT'])
+def promote_user(user_id):
+    current_user, error = get_admin_user()
+    if error:
+        return error
+
+    user = User.query.get_or_404(user_id)
+
+    if user.is_admin:
+        return jsonify({'message': 'User is already an admin'})
+
+    user.is_admin = True
+    db.session.commit()
+
+    return jsonify({'message': f'User {user.username} promoted to admin'})
+
+
+# ============================================
+# Activity 4: Recent activity (last 10 todos)
+# ============================================
+
+@app.route('/api/admin/recent-activity', methods=['GET'])
+def recent_activity():
+    current_user, error = get_admin_user()
+    if error:
+        return error
+
+    todos = (
+        Todo.query
+        .order_by(Todo.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    result = []
+    for todo in todos:
+        data = todo.to_dict()
+        data['username'] = todo.user.username
+        result.append(data)
+
+    return jsonify({'recent_todos': result})
+
 @app.route('/api/admin/stats', methods=['GET'])
 def get_stats():
     # Step 1: Check if user is admin
